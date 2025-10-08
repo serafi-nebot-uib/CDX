@@ -1,0 +1,441 @@
+% M1.tex
+\documentclass[11pt,a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{mathtools}
+\usepackage{float}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue,
+  pdftitle={Comunicaciones de Datos - Módulo 1},
+  pdfauthor={},
+  pdfsubject={Apuntes ampliados}
+}
+
+\setlist[itemize]{noitemsep, topsep=0pt}
+\setlist[enumerate]{noitemsep, topsep=0pt}
+
+% Short commands
+\newcommand{\bits}{\mathrm{bits}}
+\newcommand{\s}{\mathrm{s}}
+\newcommand{\Hz}{\mathrm{Hz}}
+\newcommand{\dB}{\mathrm{dB}}
+\newcommand{\dBm}{\mathrm{dBm}}
+\newcommand{\Watt}{\mathrm{W}}
+
+\begin{document}
+
+\tableofcontents
+\bigskip
+
+% -----------------------------
+\section{Introducción al modelo de comunicaciones}
+El objetivo de estos apuntes es presentar el \emph{modelo de comunicaciones} y los fundamentos físicos y matemáticos que rigen el envío de información entre entidades. En términos generales, comunicar datos consiste en convertir un mensaje en una señal, propagarla por un medio y reconstruir el mensaje en el destino. 
+
+Los bloques funcionales básicos son:
+\begin{itemize}
+  \item \textbf{Fuente}: genera el mensaje (información) a transmitir.
+  \item \textbf{Transmisor}: transforma el mensaje en una señal adecuada para el medio.
+  \item \textbf{Sistema de transmisión}: medio físico y nodos intermedios por los que circula la señal.
+  \item \textbf{Receptor}: procesa la señal recibida para extraer la información.
+  \item \textbf{Destinatario}: actúa como consumidor/interpretador final de la información.
+  \item \textbf{Perturbaciones}: ruido e interferencias que distorsionan la señal durante la transmisión.
+\end{itemize}
+
+El modelo es \emph{universal} y sirve de referencia para el diseño y análisis de cualquier sistema de comunicación (telefonía, radioenlaces, redes cableadas, etc.).
+
+% -----------------------------
+\section{Entidades, mensajes y señales}
+
+\subsection{Entidades}
+Una \textbf{entidad} es cualquier elemento capaz de generar o recibir mensajes: computadoras, routers, personas, sensores, etc. En redes normalmente hay bidireccionalidad (full-dúplex o half-dúplex) y, en el modelado, cada sentido puede representarse por una instancia del modelo de comunicaciones.
+
+\subsection{Mensajes}
+Un \emph{mensaje} se caracteriza por:
+\begin{itemize}
+  \item \textbf{Formato cualitativo}: texto, imagen, audio, vídeo o combinaciones (multimedia).
+  \item \textbf{Cantidad de información}: medible (ver teoría de la información).
+\end{itemize}
+
+\subsection{Señales}
+En comunicación de datos, una \emph{señal} es la variación temporal de una magnitud física (eléctrica, óptica, acústica, química, etc.) que representa el mensaje. El envío del mensaje se realiza mediante la propagación de la señal a través de un \emph{medio de transmisión}.
+
+% -----------------------------
+\section{Medios de transmisión, tipos de señal y magnitudes}
+A continuación se resume la relación típica entre medios, tipo de señal y magnitud física utilizada.
+
+\begin{table}[H]
+  \centering
+  \caption{Medios de transmisión, tipo de señal y magnitud}
+  \begin{tabular}{l l l l}
+    \toprule
+    Medio & Tipo de señal & Magnitud que varía & Velocidad de propagación (\si{\kilo\meter\per\second}) \\
+    \midrule
+    Medio metálico (guiado) & Eléctrica & Voltaje / corriente & \SI{230000}{\kilo\meter\per\second} \\
+    Fibra óptica (guiado) & Óptica & Intensidad óptica & \SI{214000}{\kilo\meter\per\second} \\
+    Espacio libre (no guiado) & EM / óptica & Campo electromagnético & \SI{300000}{\kilo\meter\per\second} \\
+    Agua (acústica) & Acústica & Intensidad acústica & \SIrange{1460}{1520}{\meter\per\second} \\
+    Cuerpo humano & Química/varios & Concentración molecular & variable \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Notas}
+\begin{itemize}
+  \item La velocidad de propagación depende del medio; a menudo se expresa como \emph{factor de velocidad} con respecto a la velocidad de la luz en el vacío.
+  \item ``No guiado'' se refiere a propagación en espacio libre o medios en los que la señal se dispersa. 
+\end{itemize}
+
+% -----------------------------
+\section{Tiempo de propagación y tiempo de transmisión}
+\subsection{Definiciones}
+\begin{itemize}
+  \item \textbf{Tiempo de propagación} ($t_p$): tiempo que tarda la señal en recorrer la distancia $d$ por el medio:
+  \[
+    t_p = \frac{d}{v}
+  \]
+  donde $v$ es la velocidad de propagación en \si{\meter\per\second}.
+  \item \textbf{Tiempo de transmisión} ($t_{tx}$): tiempo necesario para enviar todos los bits del mensaje a la velocidad del enlace $R$ (bits por segundo):
+  \[
+    t_{tx} = \frac{L}{R}
+  \]
+  con $L$ la longitud en bits del mensaje.
+  \item \textbf{Instante en el que el receptor termina de recibir el mensaje} (si A comienza a enviar en $t=0$): 
+  \[
+    t_\text{fin} = t_{tx} + t_p.
+  \]
+\end{itemize}
+
+\subsection{Ejemplos resueltos (ejercicio del PDF)}
+Se pide calcular tiempos para un mensaje de \emph{1 MB} entre dos computadores separados por \SI{100}{\meter}.
+
+\medskip
+\textbf{Convención usada aquí:} usaremos \emph{1 MB = 10\textsuperscript{6} bytes} = \SI{1e6}{bytes} (formato decimal, frecuente en comunicaciones). Si se quiere usar la definición binaria (MiB = $2^{20}$ bytes) los resultados cambian ligeramente; indico también cómo adaptarlos.
+
+\subsubsection*{Caso (a)}
+Dos computadores conectados por cable metálico. Tamaño del mensaje $=1\ \mathrm{MB} = \num{8e6}\ \bits$. Velocidad de transmisión $R=\SI{1e9}{\bits\per\s}$ (\SI{1}{Gbps}). Distancia $d=\SI{100}{\meter}$. Velocidad de propagación en metálico: \SI{230000}{\kilo\meter\per\second} = \SI{230e6}{\meter\per\second}.
+
+\[
+t_p=\frac{100}{230\cdot 10^{6}}\ \s \approx 4.3478\times 10^{-7}\ \s \approx 0.435\ \mu\text{s}.
+\]
+\[
+t_{tx}=\frac{8\times 10^{6}}{10^{9}}\ \s = 8\times 10^{-3}\ \s = 8\ \text{ms}.
+\]
+\[
+t_\text{fin}=t_{tx}+t_p\approx 8\ \text{ms} + 0.000435\ \text{ms}\approx 8.000435\ \text{ms}.
+\]
+
+Si en cambio se toma $1\ \text{MiB}=2^{20}\ \text{bytes}\approx 1.048576\times 10^{6}\ \text{bytes}$ (bits $\approx 8.388608\times 10^{6}$), el tiempo de transmisión es $\approx 8.3886\ \text{ms}$ y $t_\text{fin}\approx 8.3890\ \text{ms}$.
+
+\subsubsection*{Caso (b)}
+Pregunta: ¿en qué instante termina B de recibir el mensaje? Respuesta: $t_\text{fin}$ calculado arriba.
+
+\subsubsection*{Caso (c)}
+Mismo escenario pero cable de fibra óptica y velocidad de transmisión $R=\SI{100e9}{\bits\per\s}$ (\SI{100}{Gbps}). Velocidad de propagación en fibra: \SI{214000}{\kilo\meter\per\second} = \SI{214e6}{\meter\per\second}.
+
+\[
+t_p=\frac{100}{214\cdot 10^{6}}\ \s \approx 4.6729\times 10^{-7}\ \s \approx 0.467\ \mu\text{s}.
+\]
+\[
+t_{tx}=\frac{8\times 10^{6}}{100\times 10^{9}}\ \s = 8\times 10^{-5}\ \s = 80\ \mu\text{s}.
+\]
+\[
+t_\text{fin}\approx 80\ \mu\text{s} + 0.467\ \mu\text{s} \approx 80.467\ \mu\text{s}.
+\]
+
+\subsubsection*{Caso (d)}
+Conexión a través de un repetidor instalado en un satélite GEO (altura $\approx$ \SI{36000}{\kilo\meter} sobre el ecuador), velocidad de transmisión $R=\SI{300e6}{\bits\per\s}$ (\SI{300}{Mbps}). Si el enlace A--satélite--B se aproxima por dos tramos verticales de \SI{36000}{\kilo\meter} cada uno, la distancia total recorrida por la señal es $\approx\SI{72000}{\kilo\meter}$.
+
+Velocidad de propagación en espacio libre $\approx \SI{300000}{\kilo\meter\per\second}$.
+
+\[
+t_p = \frac{72000}{300000}\ \s = 0.24\ \s = 240\ \text{ms}.
+\]
+\[
+t_{tx}=\frac{8\times 10^{6}}{300\times 10^{6}}\ \s \approx 0.0266667\ \s = 26.6667\ \text{ms}.
+\]
+\[
+t_\text{fin}= t_{tx}+t_p \approx 0.0266667\ \s + 0.24\ \s = 0.2666667\ \s \approx 266.667\ \text{ms}.
+\]
+
+\paragraph{Comentarios}
+\begin{itemize}
+  \item En enlaces de larga distancia (p. ej. satélite GEO) la latencia por propagación domina; incluso con $R$ alto, la propagación introduce retardos grandes.
+  \item En enlaces cortos y de alta tasa (fibra 100 Gbps), el tiempo de transmisión domina frente a la propagación en distancias de cientos de metros.
+\end{itemize}
+
+% -----------------------------
+\section{El modelo de comunicaciones (bloques y ejemplos)}
+El sistema de comunicaciones completo incluye además transductores (dispositivos que cambian la naturaleza de la señal, p. ej. micrófono, altavoz, antena, fotodetector).
+
+\subsection{Transductores: tabla ejemplar}
+\begin{table}[H]
+  \centering
+  \caption{Ejemplos de transductores y su conversión}
+  \begin{tabular}{l l l}
+    \toprule
+    Transductor & Entrada & Salida \\
+    \midrule
+    Micrófono & Acústica & Señal eléctrica \\
+    Altavoz & Señal eléctrica & Acústica \\
+    Cámara & Óptica (+acústica en multimedia) & Señal eléctrica \\
+    Antena & Eléctrica/EM & Campo EM / eléctrica \\
+    Lámpara/LED/láser & Eléctrica & Óptica \\
+    Fotodetector/fotodiodo & Óptica & Señal eléctrica \\
+    Hidrófono & Acústica & Señal eléctrica \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Ejemplo: llamada de telefonía fija}
+\begin{itemize}
+  \item Fuente: persona hablando (señal acústica).
+  \item Transductor: micrófono (acústica a eléctrica).
+  \item Transmisor/receptor: adaptan la señal a la red pública conmutada (RTC).
+  \item Receptor/transductor: altavoz en el destino.
+\end{itemize}
+
+\subsection{Ejemplo: radioenlace entre computadores}
+\begin{itemize}
+  \item Transmisor: modulador + antena.
+  \item Medio: espacio libre (propagación electromagnética).
+  \item Receptor: antena + demodulador.
+\end{itemize}
+
+% -----------------------------
+\section{¿Qué estudia la Comunicación de Datos?}
+\begin{enumerate}
+  \item Fundamentos físicos: medios, transductores, dispositivos, hardware de transmisión.
+  \item Fundamentos matemáticos: teoría de la información, teoría de señales, codificación (fuente y canal), modulación.
+\end{enumerate}
+
+% -----------------------------
+\section{Fundamentos de la Teoría de la Información}
+La teoría de la información formaliza la cantidad de información, compresión y límites de transmisión. Las cuatro preguntas clave son:
+\begin{enumerate}
+  \item ¿Cómo medir la cantidad de información?
+  \item ¿Cómo representar la información de forma eficiente (codificación de fuente)?
+  \item ¿Cómo proteger la información frente al ruido (codificación de canal)?
+  \item ¿Cuál es la máxima tasa que puede transmitir un canal imperfecto (capacidad de canal)?
+\end{enumerate}
+
+\subsection{Medida de la información}
+Si un evento $x$ tiene probabilidad $p(x)$, la información contenida en la ocurrencia de $x$ se define como:
+\[
+I(x) = -\log_b p(x),
+\]
+con base $b$ que determina la unidad (frecuente $b=2$, unidades en \emph{bits}).
+
+\paragraph{Propiedades}
+\begin{itemize}
+  \item $I(x)\ge 0$.
+  \item Si $p(x)=1$ (evento seguro) entonces $I(x)=0$.
+  \item Para eventos independientes $x,y$: $I(x,y)=I(x)+I(y)$.
+\end{itemize}
+
+\subsection{Entropía de la fuente}
+Sea una fuente discreta con alfabeto $\mathcal{X}=\{x_1,\dots,x_M\}$ y probabilidad $p_i=p(x_i)$. La entropía (información media por símbolo) es:
+\[
+H(\mathcal{X})=-\sum_{i=1}^{M} p_i \log_2 p_i \quad\text{[bits/símbolo]}.
+\]
+Cumple $0\le H(\mathcal{X}) \le \log_2 M$.
+
+\subsubsection*{Ejemplo (entropía binaria)}
+Para una variable binaria con $p$ para el símbolo 1 y $1-p$ para el símbolo 0:
+\[
+H_2(p) = -p\log_2 p -(1-p)\log_2(1-p).
+\]
+
+\subsection{Codificación de fuente}
+La codificación de fuente asigna palabras binarias (códigos) a símbolos del alfabeto. Objetivos:
+\begin{itemize}
+  \item Minimizar la longitud media de código $\bar{L} = \sum_i p_i \ell_i$.
+  \item Respetar la decodificabilidad (p. ej. prefijo libre).
+\end{itemize}
+
+\paragraph{Eficiencia}
+La tasa (bits por símbolo) del código:
+\[
+R = \frac{\bar{L}}{\log_2 |\mathcal{A}|}
+\]
+y por el teorema de la codificación sin pérdidas,
+\[
+H(\mathcal{X}) \le \bar{L}.
+\]
+
+\subsubsection{Algoritmos de compresión sin pérdida (resumen)}
+\begin{itemize}
+  \item Sin memoria: Huffman, Shannon-Fano, codificación aritmética.
+  \item Con memoria: Lempel-Ziv (ZIP), BWT, PPM, codificación predictiva.
+  \item Formatos comunes: \texttt{ZIP}, \texttt{FLAC} (audio), \texttt{PNG}, \texttt{JPEG-LS} (imágenes sin pérdidas), \texttt{MPEG-4 ALS} (audio).
+\end{itemize}
+
+% -----------------------------
+\section{Transmisión de la información y canales discretos}
+\subsection{Modelo probabilístico}
+Se considera la probabilidad absoluta $p(x)$ de que la fuente emita $x$, la probabilidad $p(y)$ de que el receptor reciba $y$, y las probabilidades condicionadas $p(y|x)$ (transición hacia delante) y $p(x|y)$ (transición hacia atrás). Las relaciones básicas incluyen la regla de Bayes y la ley de la probabilidad total.
+
+\subsection{Información mutua}
+La información mutua entre entrada $X$ y salida $Y$ (por símbolo) es:
+\[
+I(X;Y)=\sum_{x}\sum_{y} p(x,y)\log_2\frac{p(x,y)}{p(x)p(y)}.
+\]
+Otra representación útil:
+\[
+I(X;Y)=H(X)-H(X|Y)=H(Y)-H(Y|X).
+\]
+
+La información mutua media representa cuánta incertidumbre sobre $X$ es resuelta al conocer $Y$.
+
+\subsection{Capacidad de un canal discreto}
+La \emph{capacidad} $C$ de un canal discreto es:
+\[
+C = \max_{p(x)} I(X;Y),
+\]
+la máxima información mutua por símbolo, optimizando sobre la distribución de entrada.
+
+% -----------------------------
+\section{Teoría de la señal (nociones básicas)}
+\subsection{Definición}
+Una señal $s(t)$ es una función del tiempo que puede ser analógica o digital, periódica o aperiódica.
+
+\subsection{Señal sinusoidal}
+Señal senoidal general:
+\[
+s(t)=A\cos(2\pi f t + \phi),
+\]
+donde $A$ es la amplitud, $f$ la frecuencia (Hz) y $\phi$ la fase. La potencia media de una sinusoidal con resistencia de carga $R$ es
+\[
+P_\text{media}=\frac{A^2}{2R}
+\]
+en términos de amplitud de voltaje pico $A$ (cuando $s(t)$ es voltaje).
+
+\subsection{Potencia de la señal}
+Si $s(t)$ es una señal con resistencia equivalente $R$ y corriente/voltaje adecuados, la potencia instantánea $p(t)$ y la potencia media $P$ se definen de forma habitual:
+\[
+P=\lim_{T\to\infty}\frac{1}{T}\int_0^{T} p(t)\,dt.
+\]
+
+\subsection{Decibelio (dB)}
+Relación entre dos potencias $P_1$ y $P_2$:
+\[
+\Delta_{dB} = 10\log_{10}\frac{P_1}{P_2}.
+\]
+Relación en dBm (referencia 1 mW):
+\[
+P_{\text{dBm}} = 10\log_{10}\frac{P}{1\ \text{mW}}.
+\]
+
+\subsection{Ganancias y atenuaciones en cascada}
+En dB las multiplicaciones pasan a sumas. Si hay varios amplificadores con ganancias $G_i$ (factor) y varios elementos con atenuación $A_j$, la potencia de salida total (en dB) es:
+\[
+P_\text{out,dB} = P_\text{in,dB} + 10\log_{10}\prod_i G_i - 10\log_{10}\prod_j A_j
+\]
+o, de manera más directa,
+\[
+P_\text{out,dB} = P_\text{in,dB} + \sum_i G_{i,\dB} - \sum_j \alpha_{j,\dB}.
+\]
+
+% -----------------------------
+\section{Espectro y respuesta en frecuencia}
+\subsection{Relación señal--espectro}
+La transformada de Fourier describe la relación entre una señal temporal y su espectro frecuencial:
+\[
+S(f) = \mathcal{F}\{s(t)\}.
+\]
+El \emph{ancho de banda} importante de una señal se define como la región de frecuencias donde existe la mayor parte de energía de la señal.
+
+\subsection{Señales periódicas}
+Una señal periódica tiene un espectro discreto (con componentes en armónicos de la frecuencia fundamental).
+
+\subsection{Respuesta en frecuencia de dispositivos}
+Los dispositivos (filtros, medios, transductores) actúan como ventanas en frecuencia con una respuesta $H(f)$. La salida en frecuencia es $S_\text{out}(f) = S_\text{in}(f)\cdot H(f)$.
+
+% -----------------------------
+\section{Transmisión digital y codificación de línea}
+\subsection{Transmisión digital}
+En redes informáticas la transmisión es digital: las fuentes digitales se conectan normalmente mediante transmisiones digitales (aunque la señal transmitida al medio puede ser analógica —modulada— para transmitir por espacio libre).
+
+\subsection{Codificación de línea}
+La codificación de línea adapta una secuencia binaria al canal en banda base. Ejemplos:
+\begin{itemize}
+  \item NRZ (non-return-to-zero), NRZ polar/unipolar.
+  \item Manchester (autorrelojable).
+  \item RZ, AMI, HDB3, B8ZS (codificaciones con control de huella DC).
+\end{itemize}
+
+\paragraph{Ejemplo: Manchester}
+La codificación Manchester invierte el nivel a la mitad del bit: permite sincronización por transición, pero ocupa el doble de ancho de banda nominal.
+
+% -----------------------------
+\section{Modulación digital}
+\subsection{Concepto}
+La modulación digital altera parámetros (amplitud, frecuencia, fase) de una portadora sinusoidal en función de los bits a transmitir. La señal modulada suele ser analógica en banda pasante.
+
+\subsection{Modulaciones binarias básicas}
+\begin{itemize}
+  \item $2$-ASK / OOK (Amplitude Shift Keying / On-Off Keying).
+  \item $2$-FSK (Frequency Shift Keying).
+  \item $2$-PSK (Phase Shift Keying) — BPSK.
+\end{itemize}
+
+\subsection{Modulaciones multinivel}
+\begin{itemize}
+  \item QPSK (4-PSK): 2 bits por símbolo.
+  \item QAM (Quadrature Amplitude Modulation): combina amplitud y fase; p. ej. 16-QAM, 64-QAM.
+\end{itemize}
+
+\subsection{Constelaciones}
+Las constelaciones representan en el plano complejo los puntos de señal (amplitud y fase). La distancia entre puntos determina la robustez frente al ruido.
+
+% -----------------------------
+\section{Análisis espectral de modulaciones}
+La modulación desplaza el espectro de la señal moduladora hacia la banda de la portadora. En sistemas analógicos/paso de banda el ancho de banda necesario depende del tipo de modulación y del filtrado aplicado.
+
+% -----------------------------
+\section{Apéndices: fórmulas y tablas de referencia}
+
+\subsection{Conversión entre dBm y mW}
+\[
+P(\dBm)=10\log_{10} \frac{P(\Watt)}{1\ \text{mW}},\qquad P(\Watt)=10^{(P(\dBm)-30)/10}.
+\]
+
+\subsection{Valores típicos}
+\begin{itemize}
+  \item Potencia de referencia: \SI{0}{\dBm} = \SI{1}{\milli\Watt}.
+  \item \SI{30}{\dBm} = \SI{1}{\Watt}.
+\end{itemize}
+
+% -----------------------------
+\section{Ejercicios propuestos (con indicaciones)}
+\begin{enumerate}
+  \item Repetir los cálculos del apartado ``tiempos'' suponiendo \emph{1 MiB} en lugar de \emph{1 MB}. Compare los resultados.
+  \item Diseñar un código Huffman para la fuente con símbolos $\{a,b,c,d\}$ con probabilidades $\{1/2,1/4,1/8,1/8\}$ y calcular la longitud media del código. ¿Es óptimo?
+  \item Para una señal compuesta por varias sinusoidales dadas (amplitudes y frecuencias), calcular su potencia media y representar su espectro.
+  \item Calcular la sensibilidad mínima de transmisión en un enlace coaxial con atenuación dada, dadas las ganancias de amplificación y la sensibilidad del receptor (ejercicio similar al del PDF).
+\end{enumerate}
+
+% -----------------------------
+\section{Notas didácticas y ampliaciones}
+\begin{itemize}
+  \item Las fórmulas están presentadas en su forma más útil para ingeniería; muchas demostraciones teóricas (por ejemplo, la demostración del teorema de la codificación de fuente y el cálculo de la capacidad de canal) exceden el alcance de estos apuntes, pero son accesibles en textos clásicos (Shannon, Cover \& Thomas).
+  \item Cuando se precise más detalle (p. ej. construcción paso a paso de árboles de Huffman, codificación aritmética, o análisis de rendimiento de modulaciones en presencia de ruido AWGN), puedo añadir secciones concretas con ejemplos resueltos y gráficos.
+  \item Si deseas, puedo generar también diagramas más detallados con \texttt{tikz} (p. ej. diagramas de bloques o constelaciones) o preparar una versión \texttt{beamer} con las diapositivas replicadas.
+\end{itemize}
+
+\bigskip
+\noindent\textbf{Fin del documento.}
+
+\end{document}
