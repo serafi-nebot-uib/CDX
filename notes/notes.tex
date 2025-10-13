@@ -53,41 +53,43 @@
     \end{minipage}
 \end{table}
 
-\begin{tikzpicture}[thick]
-    % Top diagram: A and B with distance d
-    \fill[gray] (0,3) rectangle (0.5,3.5);
-    \node at (0.25,3.25) {A};
-    \fill[gray] (7,3) rectangle (7.5,3.5);
-    \node at (7.25,3.25) {B};
-    \draw (0.5,3.25) -- (7,3.25);
-    \node[below] at (3.75,3) {$d$};
-
-    % Signal at A (y=1 low, y=2 high)
-    \draw[->] (0,1.4) -- (7.9,1.4);
-    \draw[line width=1.2pt, color=red] (0,1.4) -- (0.5,1.4) -- (0.5,2) -- (2,2) -- (2,1.4) -- (2.5,1.4) -- (2.5,2) -- (3,2) -- (3,1.4) -- (5,1.4) -- (5,2) -- (5.5,2) -- (5.5,1.4) -- (6,1.4);
-
-    % Signal at B (y=0 low, y=1 high), shifted by 1 unit
-    \draw[->] (0,0.4) -- (7.9,0.4);
-    \draw[line width=1.2pt, color=red] (1.5,0.4) -- (2,0.4) -- (2,1) -- (3.5,1) -- (3.5,0.4) -- (4,0.4) -- (4,1) -- (4.5,1) -- (4.5,0.4) -- (6.5,0.4) -- (6.5,1) -- (7,1) -- (7,0.4) -- (7.5,0.4);
-
-    % Dashed line connecting starts
-    \draw[dashed] (0,1.4) -- (1.5,0.4);
-
-    % t_prop label with arrows under the dashed line
-    \draw[<->] (0,0.2) -- (1.5,0.2);
-    \node[below] at (0.75,0) {$t_{\mathrm{prop}}$};
-    \draw[thin] (0,0.4) -- (0,-0.4);
-    \draw[thin] (1.5,0.4) -- (1.5,-0.4);
-
-    % Labels
-    \node[left] at (0,1.5) {Se\~{n}al en A};
-    \node[left] at (0,0.5) {Se\~{n}al en B};
-
-    % Time axis label
-    \node[right] at (7.9,1.4) {$t$};
-    \node[right] at (7.9,0.4) {$t$};
-    \node[right] at (8.5,0.9) {$t_{\mathrm{prop}} = \frac{1}{v_{\mathrm{prop}}}d$};
-\end{tikzpicture}
+\begin{center}
+    \begin{tikzpicture}[thick]
+        % Top diagram: A and B with distance d
+        \fill[gray] (0,3) rectangle (0.5,3.5);
+        \node at (0.25,3.25) {A};
+        \fill[gray] (7,3) rectangle (7.5,3.5);
+        \node at (7.25,3.25) {B};
+        \draw (0.5,3.25) -- (7,3.25);
+        \node[below] at (3.75,3) {$d$};
+    
+        % Signal at A (y=1 low, y=2 high)
+        \draw[->] (0,1.4) -- (7.9,1.4);
+        \draw[line width=1.2pt, color=red] (0,1.4) -- (0.5,1.4) -- (0.5,2) -- (2,2) -- (2,1.4) -- (2.5,1.4) -- (2.5,2) -- (3,2) -- (3,1.4) -- (5,1.4) -- (5,2) -- (5.5,2) -- (5.5,1.4) -- (6,1.4);
+    
+        % Signal at B (y=0 low, y=1 high), shifted by 1 unit
+        \draw[->] (0,0.4) -- (7.9,0.4);
+        \draw[line width=1.2pt, color=red] (1.5,0.4) -- (2,0.4) -- (2,1) -- (3.5,1) -- (3.5,0.4) -- (4,0.4) -- (4,1) -- (4.5,1) -- (4.5,0.4) -- (6.5,0.4) -- (6.5,1) -- (7,1) -- (7,0.4) -- (7.5,0.4);
+    
+        % Dashed line connecting starts
+        \draw[dashed] (0,1.4) -- (1.5,0.4);
+    
+        % t_prop label with arrows under the dashed line
+        \draw[<->] (0,0.2) -- (1.5,0.2);
+        \node[below] at (0.75,0) {$t_{\mathrm{prop}}$};
+        \draw[thin] (0,0.4) -- (0,-0.4);
+        \draw[thin] (1.5,0.4) -- (1.5,-0.4);
+    
+        % Labels
+        \node[left] at (0,1.5) {Se\~{n}al en A};
+        \node[left] at (0,0.5) {Se\~{n}al en B};
+    
+        % Time axis label
+        \node[right] at (7.9,1.4) {$t$};
+        \node[right] at (7.9,0.4) {$t$};
+        \node[right] at (8.5,0.9) {$t_{\mathrm{prop}} = \frac{1}{v_{\mathrm{prop}}}d$};
+    \end{tikzpicture}
+\end{center}
 
 
 \begin{multicols}{2}
@@ -102,7 +104,11 @@
                         & $0 \leq H(X) \leq \log_2{S}$ \\
         \textbf{Longitud media}: & $\overline{L} = \sum_{i=1}^{S}{p_i \cdot L_i}$ \\
                         & en codificación longitud fija $\overline{L} = \lceil\log_2{S}\rceil$ \\
-            \textbf{Eficiencia}:   & $\eta = \frac{H(X)}{\overline{L}}$
+                        & $H(X) \leq \overline{L} < H(X) + \epsilon$ \\
+            \textbf{Eficiencia}:   & $\eta = \frac{H(X)}{\overline{L}}$ \\
+            \textbf{Kraft}: & código unívocamente descifrable si: \\
+                            & $K = \sum\limits_{i=1}^{S}{2^{-L_i}} \leq 1 \implies$ \\
+            \textbf{Tasa compresión}: & $r = \frac{\lceil \log_2{S} \rceil}{\overline{L}}$
         \end{tabular}
     \end{tcolorbox}
     \begin{tcolorbox}[title=Entropía binaria]
@@ -179,6 +185,86 @@
     Máxima cantidad de bits de información por símbolo
     \[
         C = \max\limits_{p(x_i), p(y_j \vert x_i)}{I(X;Y)}
+    \]
+\end{tcolorbox}
+
+\begin{tcolorbox}[title=Señal]
+    Una señal $s(t)$ es cualquier variación temporal de una magnitud eléctrica, electromagnética, óptica, acústica o química en función del mensaje que se quiere enviar.
+    El envío del mensaje tiene lugar con la propagación de la señal a través de un \textbf{medio de transmisión}.
+    Las señales pueden ser \textbf{analógicas}/\textbf{digitales} y \textbf{periódicas}/\textbf{no periódicas}; se caracterizan por su \textbf{espectro} y \textbf{potencia}.
+    \[
+        s(t) = A \sin(2\pi f t + \phi)
+    \]
+    \begin{itemize}
+        \item \textbf{Amplitud $A$}: valor de pico (máximo desplazamiento en positivo)
+        \item \textbf{Período $T$}: tiempo entre picos (e.q. tiempo de duración de una oscilación).
+        \item \textbf{Frecuencia $f$}: numero de oscilaciones por unidad de tiempo ($f = \frac{1}{T}$).
+        \item \textbf{Fase $\phi$}: posición relativa con respecto al origen de tiempos. Convenios: grados ($[0, 360)$ o $[-180, 180)$) o radianes ($[0, 2\pi)$ o $[-\pi, \pi)$).
+    \end{itemize}
+    \textbf{Potencia}
+    \[
+        p(t) = v(t)i(t) = v(t)\frac{v(t)}{R} = \frac{v^2(t)}{R}
+    \]
+    En general cualquier tipo de señal:
+    \[
+        p(t) = ks^2(t)
+    \]
+    Para una señal de duración finita $\tau$ o de un tramo de duración $\tau$ de una señal de duración infinita:
+    \[
+        P = \frac{1}{\tau}\int_\tau{p(t)dt} = \frac{1}{\tau}\int_\tau{ks^2(t)dt}
+    \]
+\end{tcolorbox}
+
+\begin{tcolorbox}[title=Decibelio]
+    Mide la relación entre dos potencias (métrica relativa):
+    \[
+        \frac{P_2}{P_1}(\mathrm{dB}) = 10\log_{10}{\frac{P_2}{P_1}}
+    \]
+    \begin{multicols}{2}
+        Derivaciones absolutas del decibelio:
+        \[
+            \begin{aligned}
+                P(\mathrm{dBm}) = 10\log_{10}{\frac{P(\mathrm{mW})}{1\mathrm{mW}}} \Longleftrightarrow & P(\mathrm{mW}) = 10^{\frac{P(\mathrm{dBm})}{10}} \\
+                P(\mathrm{dBW}) = 10\log_{10}{\frac{P(\mathrm{W})}{1\mathrm{W}}} \Longleftrightarrow & P(\mathrm{W}) = 10^{\frac{P(\mathrm{dB})}{10}}
+            \end{aligned}
+        \]
+        \\
+        Relación entre dBm y dBW:
+        \[
+            \begin{aligned}
+                10\log_{10}{P(\mathrm{mW})} = & \hspace{2pt} 10\log_{10}{(1000P(W))} \\
+                P(\mathrm{dBm}) = & \hspace{2pt} P(dBw) + 30
+            \end{aligned}
+        \]
+        \\
+    \end{multicols}
+    \begin{multicols}{2}
+        \textbf{Amplificador:}
+        \[
+            \begin{aligned}
+                \text{Factor de amplificación: } \alpha = \frac{P_\mathrm{out}}{P_\mathrm{in}} \\
+                \text{Ganancia: } G(\textrm{dB}) = 10\log_{10}{\alpha}
+            \end{aligned}
+        \]
+        \textbf{Medio de transmisión:}
+        \[
+            \begin{aligned}
+                \text{Factor de atenuación: } \beta = \frac{P_\mathrm{in}}{P_\mathrm{out}} > 1 \\
+                L(\textrm{dB}) = 10\log_{10}{\beta} > 0
+            \end{aligned}
+        \]
+    \end{multicols}
+
+    Ejemplo: cascada de amplificadores
+    \[
+        P_r = P_t\frac{1}{\beta_1}\alpha_1\frac{1}{\beta_2}\alpha_2\cdots\frac{1}{\beta_n}\alpha_n \implies 10\log_{10}{P_r} = 10\log_{10}P_t - L_1 + G_1 - L2 + G2 \cdots - L_n + G_n
+    \]
+\end{tcolorbox}
+
+\begin{tcolorbox}[title=Espectro de un a señal]
+    El espectro $S$, la potencia $P$ y ancho de banda $B$ de una señal:
+    \[
+        P = \int_{f_{\textrm{min}}}^{f_{\textrm{max}}}{S(f)df}, B = f_\mathrm{max} - f_\mathrm{min}
     \]
 \end{tcolorbox}
 
