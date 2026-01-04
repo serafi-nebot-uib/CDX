@@ -1,0 +1,88 @@
+Problema 10. Contestar las siguientes preguntas acerca de las diversas trazas Wireshark referenciadas:
+
+a) En Wireshark, una conversación o flujo es el intercambio de unidades básicas de información entre dos módulos del mismo nivel que dialogan según un determinado protocolo, cualquiera que sea la capa de la arquitectura TCP/IP en la que opera dicho protocolo. Los módulos participantes en cada conversación deben quedar claramente identificados. Algunos ejemplos de identificación de diversos tipos de módulos son los siguientes:
+
+	• Módulo Ethernet (tarjeta de red) → dirección MAC.
+	• Módulo IPv4 → dirección IPv4.
+	• Módulo TCP → dirección IP: puerto TCP.
+
+A través del menú Estadísticas>Conversaciones, determinar el número de conversaciones Ethernet, IPv4, IPv6, TCP y UDP en la traza http-cnn2011.pcapng.
+
+Ethernet: 1
+IPv4: 19
+TCP: 51
+
+Total: 51 + 19 + 1 = 71
+
+
+b) Considerando la traza anterior, una de las conversaciones o flujos TCP tiene su origen en el puerto 62092. Sobre esta conversación, especificar:
+
+	• Dirección IP del cliente.
+	• Dirección IP de la puerta de enlace.
+	• Dirección IP del servidor.
+	• Dirección física del cliente.
+	• Dirección física de la puerta de enlace.
+	• Dirección física del servidor.
+
+Nota importante: en la lista de conversaciones TCP visibles a través del menú Estadísticas>Conversaciones, cada conversación se enumera correlativamente empezando por el 0. Así, se puede introducir un filtro de visualización en la ventana principal de Wireshark para que sólo aparezca la conversación a examinar. Por ejemplo, si queremos visualizar la conversación 4 (quinta conversación del listado), el filtro a utilizar es tcp.stream eq 4. Podemos obviar escribir este filtro si, desde el menú Estadísticas>Conversaciones, seleccionamos la conversación que nos interesa, y pulsamos el botón Seguir flujo…; en este momento, se abre una ventana mostrando el intercambio de mensajes del protocolo de aplicación encapsulado en el flujo TCP (ventana que ahora puede ignorarse), y automáticamente se aplica el filtro de visualización en la ventana principal de Wireshark. La acción Seguir flujo… también puede ejecutarse desde el menú Analizar>Seguir flujo… de la ventana principal de Wireshark.
+
+-                Dirección IP del cliente: 24.6.173.220
+-     Dirección IP de la puerta de enlace: No la podemos obtener
+-               Dirección IP del servidor: 157.166.255.19
+-            Dirección física del cliente: d4:85:64:a7:bf:a3
+- Dirección física de la puerta de enlace: 00:01:5c:31:bb:c1
+-           Dirección física del servidor: No la podemos obtener
+
+
+c) En la misma traza, ¿cuántos flujos TCP hay entre el cliente y la dirección IP 157.166.255.19?
+
+7
+
+
+d) Siguiendo con la traza http-cnn2011.pcapng, contestar las siguientes preguntas:
+
+- ¿Cuántos objetos imbricados contiene la página descargada (sin contar el propio código HTML)?
+
+- ¿Cuál es el tamaño de la cabecera HTTP OK que cierra la descarga del código HTML?
+
+23563 - 23220 = 343
+
+- ¿Se ha descargado el código HTML en formato comprimido? En caso afirmativo, ¿cuál es el formato de compresión, y cuánto vale el tamaño del código HTML antes y después de descomprimir?
+
+Comprimido en formato gzip
+
+Antes de descomprimir: 23220 bytes
+Después de descomprimir: 103254 bytes
+
+- ¿De dónde sale el tamaño de 257 B de la trama Ethernet que encapsula el mensaje HTTP OK que cierra la descarga del código HTML?
+
+Ethernet: 14B header
+    IPv4: 20B header
+     TCP: 20B header + 203B data
+
+
+e) Especificar el filtro justo necesario para visualizar todos los mensajes HTTP OK con la dirección IP 24.6.173.220. Nota importante: Wireshark proporciona dos menús de apoyo a la especificación de filtros de visualización: Analizar > Mostrar filtros… y Analizar > Mostrar expresión de filtro…
+
+http.response == 200 and ip.addr == 24.6.173.220
+
+
+Las siguientes preguntas se centran en la traza http-cnn2012.pcapng:
+
+f) Considerando el flujo TCP número 7 de dicha traza, ¿cuántas imágenes se descargan y de qué tipo son estas imágenes?
+
+7 imagenes
+gif
+png
+jpg
+
+g) ¿Cuál es el tamaño del objeto más grande descargado en el flujo TCP número 10?
+
+El jpg con un total de 9838B
+
+h) ¿Qué filtro habría que especificar para ver exclusivamente los segmentos TCP de apertura de conexión enviados por el cliente?
+
+tcp.flags.syn == 1 and ip.src == 24.6.173.220
+
+i) ¿Cuánto vale el tamaño del fragmento HTML residual contenido en el primer paquete HTTP OK del flujo TCP número 0? 
+
+355B

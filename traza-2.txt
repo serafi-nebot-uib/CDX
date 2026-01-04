@@ -1,0 +1,60 @@
+1. En los primeros paquetes, el cliente realiza una consulta para obtener las direcciones IP de un sitio web identificado por un "alias" o nombre común. Especificar este nombre y las direcciones IP devueltas.
+
+Sitio web solicitado: www.yahoo.com
+     Nombre canónico: www.yahoo.akadns.net
+       IPs devueltas:
+			216.109.117.106
+			216.109.117.109
+			216.109.117.110
+			216.109.117.204
+			216.109.117.206
+			216.109.118.70
+			216.109.118.76
+			216.109.118.79
+
+2. ¿Cuántos paquetes se requieren para descargar la primera parte de la página web solicitada (contenido HTML)?
+
+11
+
+3. ¿Usa este sitio el compresor GZIP para reducir los datos a enviar? ¿Y escribe cookies?
+
+Utiliza GZIP.
+Escribe 2 cookies.
+
+4. ¿Qué ocurre con los paquetes 26 y 27?
+
+El código HTML descargado anteriormente contiene un trozo de código JavaScript que debe ser descargado de otro servidor, concretamente "us.js2.yimg.com".
+
+a321.yimg.com.georedirector.akadns.net: type CNAME, class IN, cname a321.x.a.yimg.com
+
+La petición DNS devuelve el nombre canónico "a321.yimg.com.georedirector.akadns.net" y las siguientes direcciones IP:
+    64.21.46.151
+    64.21.46.134
+    64.21.46.150
+
+5. ¿Qué significan los paquetes 28, 29 y 30?
+
+El establecimiento de la conexión TCP con el servidor us.js2.yimg.com para luego poder descargar el código JS.
+
+6. En el paquete 37 se observa otra petición al DNS. ¿Acerca de qué sitio web se realiza esta petición, y por qué? ¿No se obtuvo ya esta dirección en el paquete 26?
+
+us.i1.yimg.com, para descargar otro código JS.
+
+    us.i1.yimg.com: type CNAME, class IN, cname a943.yimg.com.georedirector.akadns.net
+    a943.yimg.com.georedirector.akadns.net: type CNAME, class IN, cname a943.x.a.yimg.com
+    a943.x.a.yimg.com: type A, class IN, addr 64.21.46.137
+    a943.x.a.yimg.com: type A, class IN, addr 64.21.46.144
+
+7. En los paquetes 42 y 48 se observan dos mensajes HTTP GET. ¿Por qué no se realizó una nueva petición al DNS antes del segundo GET?
+
+Porque es la IP del servidor es la misma para ambas peticiones HTTP.
+
+8. Examinar el paquete 160. Los datos contenidos dentro del segmento encapsulado en este paquete se ensamblan con los datos de segmentos anteriores. ¿Cuál es el primer segmento (paquete) de esta lista de ensamblado? Observando los paquetes 141 y 142, ¿forman parte del ensamblado anterior? ¿Qué pasa cuando un conjunto de paquetes que deben ser ensamblados no llegan formando una secuencia continua o en el orden correcto?
+
+- El primer segmento viene encapsulado en el paquete 135.
+- No, forman parte de dos descargas de imagenes GIF separadas.
+- TCP puede reconstruir el mensaje gracias a un campo de cada paquete que indica la posición de los datos del segmento en el mensaje global.
+
+9. Volvamos a los paquetes 141 y 142. Contienen gráficos (archivos GIF) provenientes de la misma dirección IP. ¿Cómo sabe el cliente a qué gráfico corresponde cada GET? 
+
+Tanto el paquete 141 como el 142 marcan el final de un hilo TCP, por tanto se sabe que paquete final corresponde a que petición HTTP.

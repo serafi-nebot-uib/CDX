@@ -1,0 +1,43 @@
+1. ¿Cuál es el papel de los paquetes 1 y 2? ¿Cuál es el nombre canónico del servidor solicitado y cuáles son las direcciones IP devueltas?
+
+El paquete 1 es cliente que solicita al servidor DNS qué IPs tiene el nombre de dominio www.google.com.
+El paquete 2 es el servidor DNS contestando al cliente con las direcciones IP del nombre de dominio solicitado.
+
+Nombre canónico: www.l.google.com
+IPs:
+	- 64.233.161.99
+	- 64.233.161.104
+	- 64.233.161.147
+
+2. ¿Es posible que esta captura se haya realizado con el Wireshark instalado en el servidor?
+
+No. Porque el servidor no va a realizar una petición DNS, el cliente es el que inicia la conexión.
+Además, las peticiones HTTP se inician desde el origien, cosa que hace el cliente, no el servidor.
+
+3. ¿Cuál es la dirección local del cliente?
+
+00:b0:d0:92:e7:92
+
+4. ¿Qué representan los paquetes 3, 4 y 5?
+
+El inicio de la conexión TCP entre cliente y servidor.
+	#3 SYN          cliente  ->  servidor
+	#4 SYN, ACK     servidor ->  cliente
+	#5 ACK          cliente  ->  servidor
+
+5. ¿Cuál es la dirección local de destino especificada en la petición al DNS?
+
+00:b0:d0:d0:65:d4
+
+6. ¿Cuál es la dirección local de destino especificada en todo paquete dirigido al servidor web?
+
+00:d0:00:9b:84:0a
+
+7. ¿A qué dispositivos corresponden las direcciones locales respondidas en las dos preguntas anteriores?
+
+La primera sería del router de la red local del cliente.
+La segunda sería del ????
+
+8. ¿Podemos conocer la dirección local del servidor? 
+
+No, porque esta en una red diferente.

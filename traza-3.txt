@@ -1,0 +1,9 @@
+1. ¿Cuáles son las páginas web solicitadas y cuál es la lista de paquetes involucrados en cada caso?
+
+www.yahoo.com
+
+2. Comparar los puertos de destino de los paquetes 3 y 10. ¿Qué representa el hecho de que sean diferentes?
+
+3. Observar los paquetes 13-20. ¿Qué intercambio de información representan estos paquetes, y con qué servidor se llevó a cabo? ¿Por qué no existe un flujo similar de paquetes con el otro servidor?
+
+4. En la columna INFO del paquete 6 se puede leer GET/HTTP/1.1. ¿Qué se lee en el caso del paquete 21 y por qué? 
